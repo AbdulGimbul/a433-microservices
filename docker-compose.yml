@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  item-app:
+    # Menggunakan image item-app dari Github Packages
+    image: ghcr.io/abdulgimbul/item-app:v1
+    # Melakukan port mapping agar dapat diakses dari port 80 di host
+    ports:
+      - 80:80
+    # Menerapkan restart policy agar container selalu restart ketika terhenti
+    restart: always
+    # Pastikan item-app hanya berjalan setelah item-db diluncurkan
+    depends_on:
+      - item-db
+  item-db:
+    # Menggunakan image mongo:3 dari Docker Hub
+    image: mongo:3
+    # Menerapkan restart policy agar container selalu restart ketika terhenti
+    restart: always
+    # Memakai volume bernama app-db dengan target /data/db di container
+    volumes:
+      - app-db:/data/db
+
+# Memiliki satu buah volume bernama app-db
+volumes:
+  app-db:
