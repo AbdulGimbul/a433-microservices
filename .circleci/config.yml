@@ -26,7 +26,7 @@ jobs:
           name: Test app
           command: go test -v -short --count=1 $(go list ./...)
 
-  build-and-push:
+  build-app-karsajobs:
     executor: go-docker
     steps:
       - checkout
