@@ -25,6 +25,21 @@ jobs:
       - run: 
           name: Test app
           command: go test -v -short --count=1 $(go list ./...)
+
+  build-and-push:
+    executor: go-docker
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t ghcr.io/abdulgimbul/karsajobs:latest .
+      - run:
+          name: Login to Docker Hub
+          command: echo $CR_PAT | docker login ghcr.io -u abdulgimbul --password-stdin
+      - run:
+          name: Push image to Docker Hub
+          command: docker push ghcr.io/abdulgimbul/karsajobs:latest          
   
 workflows:
   version: 2
@@ -35,6 +50,10 @@ workflows:
             branches:
               only: karsajobs
       - test-app:
+          filters:
+            branches:
+              only: karsajobs
+      - build-app-karsajobs:
           filters:
             branches:
               only: karsajobs
