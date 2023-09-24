@@ -1,27 +1,29 @@
 version: 2.1
 executors:
-  docker-executor:
+  go-docker:
     docker:
-      - image: circleci/golang:1.14
+      - image: circleci/golang:1.16
+
 jobs:
   lint-dockerfile:
-    executor: docker-executor
+    executor: go-docker
     steps:
       - checkout
-      - run:
-          name: Lint Dockerfile
+      - run: 
+          name: Install hadolint
           command: |
-            sudo apt-get install shellcheck -y
-            wget -O - https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
-            sudo mv hadolint-Linux-x86_64 /usr/local/bin/hadolint
-            sudo +x /usr/local/bin/hadolint
-            ./hadolint Dockerfile
+            sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 &&\
+            sudo chmod +x /bin/hadolint
+      - run: 
+          name: Lint Dockerfile
+          command: hadolint Dockerfile
+
   test-app:
-    executor: docker-executor
+    executor: go-docker
     steps:
       - checkout
-      - run:
-          name: Test App
+      - run: 
+          name: Test app
           command: go test -v -short --count=1 $(go list ./...)
   build-app-karsajobs:
     executor: docker-executor
@@ -38,7 +40,7 @@ jobs:
             docker push my-app-ui:latest
 workflows:
   version: 2
-  build-and-push:
+  build:
     jobs:
       - lint-dockerfile:
           filters:
