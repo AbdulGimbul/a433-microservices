@@ -11,8 +11,7 @@ jobs:
       - run:
           name: Lint Dockerfile
           command: |
-            wget -O - https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
-            chmod +x hadolint
+            wget -O - https://github.com/hadolint/hadolint/archive/refs/tags/v2.12.0.tar.gz | tar gz
             ./hadolint Dockerfile
   test-app:
     executor: docker-executor
