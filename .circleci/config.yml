@@ -35,7 +35,7 @@ jobs:
             docker push my-app-ui:latest
 workflows:
   version: 2
-  build-deploy:
+  build-and-push:
     jobs:
       - lint-dockerfile:
           filters:
